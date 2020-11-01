@@ -34,7 +34,7 @@ if conclusion.nil?
   exit(false)
 end
 
-while conclusion != "success"
+while conclusion.eql? "success"
   puts "The check #{check_name} is not succeeded yet, will check back in #{wait} seconds..."
   sleep(wait)
   conclusion = query_check_status(ref, check_name, token, repo, owner)
