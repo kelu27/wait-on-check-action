@@ -42,4 +42,4 @@ end
 
 puts "Check completed with a conclusion #{conclusion}"
 # Bail if check is not success
-exit(false) unless conclusion == "success"
+exit(false) unless conclusion.eql? "success"
