@@ -38,6 +38,9 @@ while conclusion != "success"
   conclusion = query_check_status(ref, check_name, token, repo, owner)
 end
 
-puts "Check completed with a conclusion #{conclusion}"
-# Bail if check is not success
-exit(false) ? conclusion != "success" : exit(true)
+if conclusion == "success"
+  puts "Check completed with a conclusion #{conclusion}"
+  exit(true)
+else
+  exit(false)
+end
