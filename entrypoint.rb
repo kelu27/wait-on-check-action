@@ -29,17 +29,17 @@ ref, check_name, token, wait, repo, owner = ARGV
 wait = wait.to_i
 conclusion = query_check_status(ref, check_name, token, repo, owner)
 
-if conclusiom.nil?
+if conclusion.nil?
   puts "The requested check was never run against this ref, exiting..."
   exit(false)
 end
 
-while conclusiom != "success"
-  puts "The requested check hasn't completed yet, will check back in #{wait} seconds..."
+while conclusion != "success"
+  puts "The check #{check_name} is not succeeded yet, will check back in #{wait} seconds..."
   sleep(wait)
-  conclusiom, conclusion = query_check_status(ref, check_name, token)
+  conclusion = query_check_status(ref, check_name, token)
 end
 
-puts "Check completed with a conclusion #{conclusiom}"
+puts "Check completed with a conclusion #{conclusion}"
 # Bail if check is not success
 exit(false) unless conclusion == "success"
