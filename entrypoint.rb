@@ -19,7 +19,6 @@ def query_check_status(ref, check_name, token, repo, owner)
   return [nil, nil] if parsed["total_count"].zero?
 
   [
-    parsed["check_runs"][0]["status"],
     parsed["check_runs"][0]["conclusion"]
   ]
 end
@@ -28,19 +27,19 @@ end
 # is provided for job. Probably, the "name" key should be kept empty to keep things short
 ref, check_name, token, wait, repo, owner = ARGV
 wait = wait.to_i
-current_status, conclusion = query_check_status(ref, check_name, token, repo, owner)
+conclusion = query_check_status(ref, check_name, token, repo, owner)
 
-if current_status.nil?
+if conclusiom.nil?
   puts "The requested check was never run against this ref, exiting..."
   exit(false)
 end
 
-while current_status == "queued" || current_status == "in_progress"
+while conclusiom != "success"
   puts "The requested check hasn't completed yet, will check back in #{wait} seconds..."
   sleep(wait)
-  current_status, conclusion = query_check_status(ref, check_name, token)
+  conclusiom, conclusion = query_check_status(ref, check_name, token)
 end
 
-puts "Check completed with a status #{current_status}, and conclusion #{conclusion}"
+puts "Check completed with a conclusion #{conclusiom}"
 # Bail if check is not success
 exit(false) unless conclusion == "success"
