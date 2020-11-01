@@ -29,7 +29,7 @@ conclusion = query_check_status(ref, check_name, token, repo, owner)
 
 if conclusion.nil?
   puts "The requested check was never run against this ref, exiting..."
-  exit(false)
+  exit(1)
 end
 
 while conclusion != "success"
@@ -38,9 +38,6 @@ while conclusion != "success"
   conclusion = query_check_status(ref, check_name, token, repo, owner)
 end
 
-if conclusion == "success"
-  puts "Check completed with a conclusion #{conclusion}"
-  exit(true)
-else
-  exit(false)
-end
+puts "Check completed with a conclusion #{conclusion}"
+# Bail if check is not success
+conclusion != "success" ? exit(1) : exit(0)
