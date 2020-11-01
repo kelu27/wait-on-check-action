@@ -16,12 +16,9 @@ def query_check_status(ref, check_name, token, repo, owner)
     http.request(request)
   }
   parsed = JSON.parse(response.body)
-  # puts "parsed #{parsed}"
-  return [nil] if parsed["total_count"].zero?
-
-  [
-    parsed["check_runs"][0]["conclusion"]
-  ]
+  return nil if parsed["total_count"].zero?
+  
+  parsed["check_runs"][0]["conclusion"]
 end
 
 # check_name is the name of the "job" key in a workflow, or the full name if the "name" key
@@ -30,16 +27,10 @@ ref, check_name, token, wait, repo, owner = ARGV
 wait = wait.to_i
 conclusion = query_check_status(ref, check_name, token, repo, owner)
 
-# puts "conclusion #{conclusion}"
-
-# puts conclusion[0]
-
 if conclusion.nil?
   puts "The requested check was never run against this ref, exiting..."
   exit(false)
 end
-
-# puts conclusion.eql? "success"
 
 while conclusion != "success"
   puts "The check #{check_name} is not succeeded yet, will check back in #{wait} seconds..."
@@ -47,8 +38,6 @@ while conclusion != "success"
   conclusion = query_check_status(ref, check_name, token, repo, owner)
 end
 
-# puts conclusion.eql? "success"
-
 puts "Check completed with a conclusion #{conclusion}"
 # Bail if check is not success
-exit(false) unless conclusion.eql? "success"
+exit(false) unless conclusion != "success"
