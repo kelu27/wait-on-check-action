@@ -17,7 +17,7 @@ def query_check_status(ref, check_name, token, repo, owner)
   }
   parsed = JSON.parse(response.body)
   # puts "parsed #{parsed}"
-  return [nil, nil] if parsed["total_count"].zero?
+  return [nil] if parsed["total_count"].zero?
 
   [
     parsed["check_runs"][0]["conclusion"]
@@ -34,21 +34,21 @@ conclusion = query_check_status(ref, check_name, token, repo, owner)
 
 # puts conclusion[0]
 
-if conclusion[0].nil?
+if conclusion.nil?
   puts "The requested check was never run against this ref, exiting..."
   exit(false)
 end
 
-# puts conclusion[0].eql? "success"
+# puts conclusion.eql? "success"
 
-while conclusion.eql? "success"
+while conclusion != "success"
   puts "The check #{check_name} is not succeeded yet, will check back in #{wait} seconds..."
   sleep(wait)
   conclusion = query_check_status(ref, check_name, token, repo, owner)
 end
 
-# puts conclusion[0].eql? "success"
+# puts conclusion.eql? "success"
 
 puts "Check completed with a conclusion #{conclusion}"
 # Bail if check is not success
-exit(false) unless conclusion[0].eql? "success"
+exit(false) unless conclusion.eql? "success"
