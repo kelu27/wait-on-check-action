@@ -37,7 +37,7 @@ end
 while conclusion != "success"
   puts "The check #{check_name} is not succeeded yet, will check back in #{wait} seconds..."
   sleep(wait)
-  conclusion = query_check_status(ref, check_name, token)
+  conclusion = query_check_status(ref, check_name, token, repo, owner)
 end
 
 puts "Check completed with a conclusion #{conclusion}"
